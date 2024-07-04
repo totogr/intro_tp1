@@ -1,0 +1,40 @@
+html {
+    background-color: #a3d1f3;
+    font-family: 'Fjalla One', sans-serif; 
+}
+
+header {
+    text-align: center;
+    font-size: 20px;
+}
+
+h1 {
+    color: black;
+    text-align: center;
+    font-size: 3em;
+}
+
+main li {
+    list-style: none;
+    display: inline-flex;
+    width: 19.5%;
+    text-align: center;
+    margin: 1em 0;
+}
+
+a {
+   color: black; 
+}
+
+.header-container {
+    position: relative;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.header-container img {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 100px;
+}
