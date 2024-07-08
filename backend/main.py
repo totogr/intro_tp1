@@ -138,6 +138,46 @@ def eliminar_jugador(id):
         print('Error', error)
         return jsonify({"error": "Error al eliminar jugador"}), 500
 
+@app.route('/equipo/jugador/editar_jugador/<int:jugador_id>', methods=['PUT'])
+def modificar_jugador(jugador_id):
+    try:
+        data = request.json
+        
+        jugador = Jugador.query.get(jugador_id)
+
+        if not jugador:
+            return jsonify({"error": "Jugador no encontrado"}), 404
+
+        campos_actualizables = ['nombre', 'edad', 'posicion', 'camiseta', 'nacionalidad', 'titular', 'capitan']
+
+        print(data)
+
+        for campo in campos_actualizables:
+            if campo in data and data[campo]:
+                valor = data[campo].strip()
+                if valor:
+                    if campo == 'nombre':
+                        jugador.nombre = valor
+                    if campo == 'edad':
+                        jugador.edad = valor    
+                    if campo == 'posicion':
+                        jugador.posicion = valor
+                    if campo == 'camiseta':
+                        jugador.camiseta = valor
+                    if campo == 'nacionalidad':
+                        jugador.nacionalidad = valor
+                    if campo == 'titular':
+                        jugador.titularidad = valor
+                    if campo == 'capitan':
+                        jugador.capitan = valor
+
+        db.session.commit()
+
+        return ({'mensaje':{'id': jugador.id, 'equipo_id': jugador.equipo_id}}), 201
+
+    except Exception as error:
+        print('Error', error)
+        return jsonify({"error": "Error al modificar jugador"}), 500
 
 
 
