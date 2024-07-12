@@ -30,7 +30,7 @@ def mostrar_ligas():
         return jsonify(ligas_datos)
 
     except Exception as error:
-        print('Error', error)
+        print('Error-1', error)
         return jsonify({'mensaje': 'Error de Conexion'}), 500
     
 #Ruta mostrar equipos de liga
@@ -51,7 +51,7 @@ def mostrar_equipos(liga_id):
         return jsonify(equipos_datos)
 
     except Exception as error:
-        print('Error', error)
+        print('Error-2', error)
         return jsonify({'mensaje': 'Error de Conexion'}), 500
     
 #Ruta mostrar jugadores de equipo
@@ -76,7 +76,7 @@ def mostrar_jugadores(equipo_id):
         return jsonify(jugadores_datos)
 
     except Exception as error:
-        print('Error', error)
+        print('Error-3', error)
         return jsonify({'mensaje': 'Error de Conexion'}), 500
 
 #Ruta agregar jugadores al equipo
@@ -91,22 +91,62 @@ def crear_jugador(equipo_id):
         nuevo_posicion = data.get('posicion')
         nuevo_camiseta = data.get('camiseta')
         nuevo_nacionalidad = data.get('nacionalidad')
-        nuevo_titular = data.get('titular')
-        nuevo_capitan = data.get('capitan')
+        nuevo_titularidad = data.get('titularidad') == 'true'
+        nuevo_capitan = data.get('capitan') == 'true'
 
-        nuevo_jugador = Jugador(
-            nombre = nuevo_nombre,
-            edad = nuevo_edad,
-            posicion = nuevo_posicion,
-            camiseta = nuevo_camiseta,
-            nacionalidad = nuevo_nacionalidad,
-            titularidad = nuevo_titular,
-            capitan = nuevo_capitan,
-            equipo_id = equipo_id
-        )
-
+        jugador_capitan = Jugador.query.where(Jugador.equipo_id == equipo_id, Jugador.capitan == "true").first()
+        jugador_titular = Jugador.query.where(Jugador.equipo_id == equipo_id, Jugador.titularidad == "true").count()
+        jugador_suplente = Jugador.query.where(Jugador.equipo_id == equipo_id, Jugador.titularidad == "false").count()
+        
+        if nuevo_titularidad and nuevo_capitan:
+            if jugador_capitan:
+                return jsonify({'error': 'Ya existe un capitan'}), 500
+            elif jugador_titular >= 11:
+                return jsonify({'error': 'Ya existen 11 titulares'}), 500
+            else:
+                nuevo_jugador = Jugador(
+                    nombre = nuevo_nombre,
+                    edad = nuevo_edad,
+                    posicion = nuevo_posicion,
+                    camiseta = nuevo_camiseta,
+                    nacionalidad = nuevo_nacionalidad,
+                    titularidad = nuevo_titularidad,
+                    capitan = nuevo_capitan,
+                    equipo_id = equipo_id
+                )
+        elif nuevo_titularidad and not nuevo_capitan:
+                if jugador_titular >= 11:
+                    return jsonify({'error': 'Ya existen 11 titulares'}), 500
+                else:
+                    nuevo_jugador = Jugador(
+                        nombre = nuevo_nombre,
+                        edad = nuevo_edad,
+                        posicion = nuevo_posicion,
+                        camiseta = nuevo_camiseta,
+                        nacionalidad = nuevo_nacionalidad,
+                        titularidad = nuevo_titularidad,
+                        capitan = nuevo_capitan,
+                        equipo_id = equipo_id
+                    )
+        elif not nuevo_titularidad and nuevo_capitan:
+            return jsonify({'error': 'Un suplente no puede ser capitan'}), 500
+        else:
+            if jugador_suplente >= 11:
+                return jsonify({'error': 'Ya existen 11 suplentes'}), 500
+            else:
+                nuevo_jugador = Jugador(
+                    nombre = nuevo_nombre,
+                    edad = nuevo_edad,
+                    posicion = nuevo_posicion,
+                    camiseta = nuevo_camiseta,
+                    nacionalidad = nuevo_nacionalidad,
+                    titularidad = nuevo_titularidad,
+                    capitan = nuevo_capitan,
+                    equipo_id = equipo_id
+                )
+        
         db.session.add(nuevo_jugador)
-        db.session.commit()
+        db.session.commit()    
 
         return ({'mensaje':{'id': nuevo_jugador.id,
                             'nombre': nuevo_jugador.nombre,
@@ -118,7 +158,7 @@ def crear_jugador(equipo_id):
                             'capitan': nuevo_jugador.capitan,
                             'equipo_id': equipo_id}}), 201    
     except Exception as error:
-        print('Error', error)
+        print('Error-4', error)
         return jsonify({'error': 'Error al agregar jugador'}), 500
 
 #Ruta eliminar jugadores del equipo
@@ -135,8 +175,10 @@ def eliminar_jugador(id):
 
         return jsonify({"success": True, 'id': id}), 200
     except Exception as error:
-        print('Error', error)
+        print('Error-6', error)
         return jsonify({"error": "Error al eliminar jugador"}), 500
+    
+#Ruta modificar jugadores del equipo
 
 @app.route('/equipo/jugador/editar_jugador/<int:jugador_id>', methods=['PUT'])
 def modificar_jugador(jugador_id):
@@ -146,11 +188,9 @@ def modificar_jugador(jugador_id):
         jugador = Jugador.query.get(jugador_id)
 
         if not jugador:
-            return jsonify({"error": "Jugador no encontrado"}), 404
+            return jsonify({"Error": "Jugador no encontrado"}), 404
 
         campos_actualizables = ['nombre', 'edad', 'posicion', 'camiseta', 'nacionalidad', 'titular', 'capitan']
-
-        print(data)
 
         for campo in campos_actualizables:
             if campo in data and data[campo]:
@@ -176,10 +216,8 @@ def modificar_jugador(jugador_id):
         return ({'mensaje':{'id': jugador.id, 'equipo_id': jugador.equipo_id}}), 201
 
     except Exception as error:
-        print('Error', error)
+        print('Error-5', error)
         return jsonify({"error": "Error al modificar jugador"}), 500
-
-
 
 
 #Creamos las tablas en la base de datos
