@@ -4,21 +4,23 @@ En este proyecto se realizo una pagina web, en la cual se cargaron las 5 princip
 ## Instalacion
 ```bash
 python3 -m venv venv
-source env/bin/activate
-```
-Clona el resopisotorio  
-```bash
+source venv/bin/activate
+"Clona el resopisotorio"  
 pip install -r requirements.txt
 ```
 
 ## Utilizacion
 Para poder utilizar la pagina web, debemos levantar el servidor web local y el Flask en nuestra PC, por lo que ejecutaremos las siguientes lineas de codigo:  
 ```bash
-python main.py
+"Para el servidor web:"
+cd frontend
 python -m http.server
+"Para levantar el servidor del Flask:"
+cd backend
+python main.py
 ```
 
 ## Creditos
 Tomas Goncalves Rei  
 Carola Sciaini  
-Fabricio Eguidi Blunda  
+Fabricio Egidi Blunda  
