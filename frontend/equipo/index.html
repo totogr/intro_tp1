@@ -132,8 +132,13 @@
                 const card_body = document.createElement("div");
                 card_body.setAttribute("class", "card-body");
 
+                const card_body2 = document.createElement("div");
+                card_body2.setAttribute("class", "card-body");
+
                 card_body.append(content[index].nombre);
+                card_body2.append(`DT: ${content[index]. dt}`);
                 card.append(card_body);
+                card.append(card_body2);
                 item.append(card);
                 container.append(item);
             }
