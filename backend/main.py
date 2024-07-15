@@ -45,7 +45,6 @@ def mostrar_equipos(liga_id):
                 'id': equipo.id,
                 'nombre': equipo.nombre,
                 'dt': equipo.dt,
-                'descripcion': equipo.descripcion
             }
             equipos_datos.append(equipo_datos)
         return jsonify(equipos_datos)
