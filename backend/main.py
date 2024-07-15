@@ -8,7 +8,7 @@ port = 5000
 
 #Configuracion base de datos
 
-app.config['SQLALCHEMY_DATABASE_URI']= 'postgresql+psycopg2://postgres:toto120403@localhost:5432/ligas'
+app.config['SQLALCHEMY_DATABASE_URI']= 'postgresql+psycopg2://postgres:postgres@localhost:5432/ligas'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
 #Endpoints
