@@ -19,7 +19,6 @@ class Equipo(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nombre = db.Column(db.String(255), nullable=False)
     dt = db.Column(db.String(255), nullable=False)
-    descripcion = db.Column(db.String(255))
     liga_id = db.Column(db.Integer, db.ForeignKey('liga.id'), nullable=False)
 
 #Creamos tabla Jugador
